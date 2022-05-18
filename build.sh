@@ -2,7 +2,7 @@
 
 set -euxo pipefail
 
-for build in ~/docker-perl/5*; do 
+for build in ../docker-perl/5*; do 
 	VERSION=$(basename $build | perl -pE 's/,/-/g')
 	OUT_TAG=simcop2387/perl-tester:$VERSION
 	IN_TAG=simcop2387/perl:$VERSION

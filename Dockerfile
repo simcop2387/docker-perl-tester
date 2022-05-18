@@ -8,7 +8,7 @@ COPY cpanfile /tmp/
 
 RUN apt-get update && \
         apt-get dist-upgrade -y && \
-        apt-get -y --no-install-recommends install aspell aspell-en libquadmath0 libssl-dev build-essential zlib1g-dev git ca-certificates pkg-config && \
+        apt-get -y --no-install-recommends install aspell aspell-en libssl-dev build-essential zlib1g-dev git ca-certificates pkg-config && \
         apt-get -y build-dep libnet-ssleay-perl
 
 RUN perl -V
