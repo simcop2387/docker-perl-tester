@@ -171,11 +171,11 @@ my $builder = IO::Async::Function->new(
         my %labels = (
          "org.opencontainers.image.created"=>$build_date,
          "org.label-schema.build-date"=>$build_date,
-         "org.opencontainers.image.source"=>"https://gitea.simcop2387.info/simcop2387/docker-perl.git",
-         "org.label-schema.vcs-url"=> "https://gitea.simcop2387.info/simcop2387/docker-perl.git",
-         "org.opencontainers.image.url"=>"https://gitea.simcop2387.info/simcop2387/docker-perl",
-         "org.label-schema.url"=>"https://gitea.simcop2387.info/simcop2387/docker-perl",
-         "org.label-schema.usage"=> "https://gitea.simcop2387.info/simcop2387/docker-perl",
+         "org.opencontainers.image.source"=>"https://gitea.simcop2387.info/simcop2387/docker-perl-tester.git",
+         "org.label-schema.vcs-url"=> "https://gitea.simcop2387.info/simcop2387/docker-perl-tester.git",
+         "org.opencontainers.image.url"=>"https://gitea.simcop2387.info/simcop2387/docker-perl-tester",
+         "org.label-schema.url"=>"https://gitea.simcop2387.info/simcop2387/docker-perl-tester",
+         "org.label-schema.usage"=> "https://gitea.simcop2387.info/simcop2387/docker-perl-tester",
          "org.opencontainers.image.revision"=>$commit_ref,
          "org.label-schema.vcs-ref"=> $commit_ref,
          "org.label-schema.version"=> $version,
@@ -185,15 +185,14 @@ my $builder = IO::Async::Function->new(
 
         my ($total_output, $total_error, $retval);
 
-        my $startdir = path("output/perls");
+        my $startdir = path(".");
         my $log_dir = path("output/logs");
         $log_dir->mkdir();
         my $log_file = $log_dir->child("$expanded_version-$options-$os_base$suffix$arch_suffix-build.log");
         my $log_fh   = $log_file->openw_utf8();
-        my $workdir = $startdir->child("$expanded_version-$options-$os_base/");
+        my $workdir = $startdir->child("docker");
 
         if ($workdir->exists()) {
-          chdir($workdir);
           my @tag_args = ();
 
           for my $push_repo (@push_repo) {
@@ -201,9 +200,13 @@ my $builder = IO::Async::Function->new(
           }
 
           my @labels = map {my $k=$_; my $v=$labels{$k}; ("--label", "$k=$v")} keys %labels;
+
+          my $base_tag = "$expanded_version-$options-$os_base$suffix$arch_suffix";
+          $build_args{BASE_IMAGE} = "gitea.simcop2387.info/simcop2387/perl-containers:$base_tag"; # we force this since it's part of the build process
+
           my @buildargs = map {my $k=$_; my $v=$build_args{$k}; ("--build-arg", "$k=$v")} keys %build_args;
 
-          my $cmd = [qw(docker buildx build --rm=true -f Dockerfile ./ --push --pull=true), @buildargs, @tag_args, @labels];
+          my $cmd = [qw(docker buildx build --network=host --rm=true -f docker/Dockerfile docker/ --push --pull=true), @buildargs, @tag_args, @labels];
 
           print "tags: [", join(', ', @$tags), "]\n";
 

@@ -1,10 +1,9 @@
-ARG BASE
-FROM ${BASE}
+ARG BASE_IMAGE
+FROM ${BASE_IMAGE}
 
 SHELL ["/bin/bash", "-o", "pipefail", "-c"]
 
 COPY cpanfile /tmp/
-
 
 RUN apt-get update && \
         apt-get dist-upgrade -y && \
@@ -13,15 +12,14 @@ RUN apt-get update && \
         apt-get -y build-dep libnet-ssleay-perl && \
         apt-get clean && rm -fr /var/cache/apt/* /var/lib/apt/lists/* && rm -fr ./cpanm /root/.cpanm /usr/src/perl /usr/src/App-cpanminus-*
 
-
 RUN perl -V
 
 RUN ( cpanm --self-upgrade || \
-    ( echo "# Installing cpanminus:"; curl -sL https://cpanmin.us/ | perl - App::cpanminus )) && cpanm -nv App::cpm Carton::Snapshot Net::SSLeay LWP::UserAgent LWP::Protocol::https && rm -rf /root/.cpanm
+    ( echo "# Installing cpanminus:"; curl -sL https://cpanmin.us/ | perl - App::cpanminus )) && cpanm --mirror http://cpanproxy.private.simcop2387.info/ -nv App::cpm Carton::Snapshot Net::SSLeay LWP::UserAgent LWP::Protocol::https && rm -rf /root/.cpanm
 
-RUN cpm install -g --show-build-log-on-failure --cpanfile /tmp/cpanfile && rm -rf /root/.perl-cpm
+RUN cpm install --mirror http://cpanproxy.private.simcop2387.info/ -g --show-build-log-on-failure --cpanfile /tmp/cpanfile && rm -rf /root/.perl-cpm
 
-RUN cpan-outdated --exclude-core -p | xargs -n1 cpanm && rm -rf /root/.cpanm
+RUN cpan-outdated --mirror http://cpanproxy.private.simcop2387.info/ --exclude-core -p | xargs -n1 cpanm && rm -rf /root/.cpanm
 
 WORKDIR /tmp/
 RUN git clone https://github.com/perl-actions/ci-perl-tester-helpers.git --depth 1 && \
