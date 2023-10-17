@@ -238,13 +238,13 @@ $builder->start();
 
 my %calls;
 
-#my $count = 0;
+my $count = 0;
 
 ALL: for my $version (@versions) {
   for my $option (@options) {
     for my $base (@bases) {
-      #      print "---> $count\n";
-      #      last ALL if $count++ == 10;
+      #                  print "---> $count\n";
+      #            last ALL if $count++ == 1;
 
       my $tags = get_tags($version, $option, $base, $suffix, $arch_suffix); 
 

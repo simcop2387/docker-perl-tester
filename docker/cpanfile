@@ -58,7 +58,7 @@ if ( "$]" >= 5.020 ) {
     requires 'Dist::Zilla::PluginBundle::Author::OALDERS';
     requires 'Dist::Zilla::PluginBundle::DROLSKY';
     requires 'Dist::Zilla::PluginBundle::Milla';
-    requires 'Dist::Zilla::PluginBundle::RJBS';
+#    requires 'Dist::Zilla::PluginBundle::RJBS';
     requires 'Dist::Zilla::Plugin::CopyFilesFromRelease';
     requires 'Dist::Zilla::Plugin::Git::Contributors';
     requires 'Dist::Zilla::Plugin::OurPkgVersion';

@@ -14,12 +14,11 @@ RUN apt-get update && \
 
 RUN perl -V
 
-RUN ( cpanm --self-upgrade || \
-    ( echo "# Installing cpanminus:"; curl -sL https://cpanmin.us/ | perl - App::cpanminus )) && cpanm --mirror http://cpanproxy.private.simcop2387.info/ -nv App::cpm Carton::Snapshot Net::SSLeay LWP::UserAgent LWP::Protocol::https && rm -rf /root/.cpanm
+RUN cpanm --mirror http://cpanproxy.voots.org/ -nv App::cpm Carton::Snapshot Net::SSLeay LWP::UserAgent LWP::Protocol::https && rm -rf /root/.cpanm
 
-RUN cpm install --mirror http://cpanproxy.private.simcop2387.info/ -g --show-build-log-on-failure --cpanfile /tmp/cpanfile && rm -rf /root/.perl-cpm
+RUN cpm install --mirror http://cpanproxy.voots.org/ -g --show-build-log-on-failure --cpanfile /tmp/cpanfile && rm -rf /root/.perl-cpm
 
-RUN cpan-outdated --mirror http://cpanproxy.private.simcop2387.info/ --exclude-core -p | xargs -n1 cpanm && rm -rf /root/.cpanm
+RUN cpan-outdated --mirror http://cpanproxy.voots.org/ --exclude-core -p | xargs -n1 cpanm && rm -rf /root/.cpanm
 
 WORKDIR /tmp/
 RUN git clone https://github.com/perl-actions/ci-perl-tester-helpers.git --depth 1 && \
